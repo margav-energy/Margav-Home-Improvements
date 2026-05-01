@@ -15,13 +15,13 @@ const services = [
     title: "Roofing",
     image: roofingImg,
     description:
-      "New roofs, repairs, pitched and flat roofing, slates, tiles, fascias, soffits, guttering and storm damage repairs.",
+      "Roof replacement & repairs, fascias, soffits, and guttering; protecting your home from the elements while improving durability and reducing long-term maintenance costs.",
   },
   {
     title: "Windows",
     image: windowsImg,
     description:
-      "A-rated double and triple glazing with uPVC, aluminium and timber frame options.",
+      "A-rated double and triple glazing with uPVC, aluminium, and timber frame options; designed to improve energy efficiency, reduce heat loss, and help lower your energy bills.",
   },
   {
     title: "Doors",

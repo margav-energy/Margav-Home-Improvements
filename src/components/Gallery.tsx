@@ -14,8 +14,8 @@ const projects = [
   { title: "Windows", image: project2 },
   { title: "Doors", image: project3 },
   { title: "Insulation", image: project4 },
-  { title: "Groundworks", image: project5 },
   { title: "Landscaping", image: project6 },
+  { title: "Groundworks", image: project5 },
 ];
 
 export default function Gallery() {
@@ -38,13 +38,11 @@ export default function Gallery() {
       id="projects"
       className="relative overflow-hidden bg-white px-6 py-28 text-[#3333cc]"
     >
-      {/* Background word */}
       <h2 className="pointer-events-none absolute -top-6 left-4 text-[18vw] font-extrabold uppercase leading-none tracking-tighter text-[#3333cc]/5">
         Projects
       </h2>
 
       <div className="relative z-10 mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.9fr_1.1fr]">
-        {/* Left text */}
         <div className="lg:sticky lg:top-28 lg:h-fit">
           <p className="mb-5 text-sm font-bold uppercase tracking-[0.35em] text-[#3333cc]">
             Recent Work
@@ -62,7 +60,6 @@ export default function Gallery() {
           </p>
         </div>
 
-        {/* Right gallery */}
         <div className="grid auto-rows-[220px] grid-cols-2 gap-8">
           {projects.map((project, index) => (
             <motion.button
@@ -82,7 +79,7 @@ export default function Gallery() {
                 group relative overflow-hidden rounded-xl text-left
                 shadow-[0_20px_60px_rgba(51,51,204,0.15)]
                 ${index === 1 ? "row-span-2" : ""}
-                ${index === 4 ? "col-span-2" : ""}
+                ${index === 5 ? "col-span-2" : ""}
               `}
             >
               <img
@@ -104,7 +101,6 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* Fullscreen viewer */}
       <AnimatePresence>
         {activeIndex !== null && (
           <motion.div
