@@ -1,19 +1,94 @@
 import React, { useState } from "react";
 
+type ContactFormValues = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  enquiryType: string;
+  estimatedBudget: string;
+  message: string;
+};
+
+const initialValues: ContactFormValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  enquiryType: "",
+  estimatedBudget: "",
+  message: "",
+};
+
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [values, setValues] = useState<ContactFormValues>(initialValues);
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormValues, string>>>(
+    {}
+  );
   const [toast, setToast] = useState<{
     type: "success" | "error";
     message: string;
   } | null>(null);
 
+  const validateForm = (formValues: ContactFormValues) => {
+    const nextErrors: Partial<Record<keyof ContactFormValues, string>> = {};
+
+    if (!/^[a-z ,.'-]{2,}$/i.test(formValues.firstName.trim())) {
+      nextErrors.firstName = "Enter a valid first name.";
+    }
+
+    if (!/^[a-z ,.'-]{2,}$/i.test(formValues.lastName.trim())) {
+      nextErrors.lastName = "Enter a valid last name.";
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.email.trim())) {
+      nextErrors.email = "Enter a valid email address.";
+    }
+
+    if (!/^[+\d][\d\s()-]{7,}$/.test(formValues.phone.trim())) {
+      nextErrors.phone = "Enter a valid phone number.";
+    }
+
+    if (!formValues.enquiryType) {
+      nextErrors.enquiryType = "Select an enquiry type.";
+    }
+
+    if (!formValues.estimatedBudget) {
+      nextErrors.estimatedBudget = "Select an estimated budget.";
+    }
+
+    if (formValues.message.trim().length < 20) {
+      nextErrors.message = "Message must be at least 20 characters.";
+    }
+
+    return nextErrors;
+  };
+
+  const handleFieldChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+
+    setValues((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setToast(null);
-    setIsSubmitting(true);
+    const validationErrors = validateForm(values);
+    setErrors(validationErrors);
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
+    if (Object.keys(validationErrors).length > 0) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
 
     try {
       const response = await fetch("https://formspree.io/f/mrejqyvy", {
@@ -28,7 +103,7 @@ export default function Contact() {
         throw new Error("Form submission failed");
       }
 
-      form.reset();
+      setValues(initialValues);
       setToast({
         type: "success",
         message: "Thanks! Your message has been sent.",
@@ -74,81 +149,118 @@ export default function Contact() {
             <form
               action="#contact"
               method="POST"
-              onSubmitCapture={handleSubmit}
               onSubmit={handleSubmit}
               className="grid gap-8 md:grid-cols-2"
             >
-              <input
-                type="text"
-                name="firstName"
-                placeholder="FIRST NAME"
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              />
+              <div>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={values.firstName}
+                  onChange={handleFieldChange}
+                  placeholder="FIRST NAME"
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                />
+                {errors.firstName && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.firstName}</p>
+                )}
+              </div>
 
-              <input
-                type="text"
-                name="lastName"
-                placeholder="LAST NAME"
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              />
+              <div>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={values.lastName}
+                  onChange={handleFieldChange}
+                  placeholder="LAST NAME"
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                />
+                {errors.lastName && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.lastName}</p>
+                )}
+              </div>
 
-              <input
-                type="email"
-                name="email"
-                placeholder="EMAIL"
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              />
+              <div>
+                <input
+                  type="email"
+                  name="email"
+                  value={values.email}
+                  onChange={handleFieldChange}
+                  placeholder="EMAIL"
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                />
+                {errors.email && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.email}</p>
+                )}
+              </div>
 
-              <input
-                type="tel"
-                name="phone"
-                placeholder="PHONE"
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              />
+              <div>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={values.phone}
+                  onChange={handleFieldChange}
+                  placeholder="PHONE"
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                />
+                {errors.phone && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.phone}</p>
+                )}
+              </div>
 
-              <select
-                name="enquiryType"
-                defaultValue=""
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              >
-                <option value="" disabled>
-                  ENQUIRY TYPE
-                </option>
-                <option value="Roofing">Roofing</option>
-                <option value="Windows">Windows</option>
-                <option value="Doors">Doors</option>
-                <option value="Insulation">Insulation</option>
-                <option value="Groundworks">Groundworks</option>
-                <option value="Landscaping">Landscaping</option>
-              </select>
+              <div>
+                <select
+                  name="enquiryType"
+                  value={values.enquiryType}
+                  onChange={handleFieldChange}
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                >
+                  <option value="">ENQUIRY TYPE</option>
+                  <option value="Roofing">Roofing</option>
+                  <option value="Windows">Windows</option>
+                  <option value="Doors">Doors</option>
+                  <option value="Insulation">Insulation</option>
+                  <option value="Groundworks">Groundworks</option>
+                  <option value="Landscaping">Landscaping</option>
+                </select>
+                {errors.enquiryType && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.enquiryType}</p>
+                )}
+              </div>
 
-              <select
-                name="estimatedBudget"
-                defaultValue=""
-                required
-                className="border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              >
-                <option value="" disabled>
-                  ESTIMATED BUDGET
-                </option>
-                <option value="Under £1,000">Under £1,000</option>
-                <option value="£1,000 - £5,000">£1,000 - £5,000</option>
-                <option value="£5,000 - £10,000">£5,000 - £10,000</option>
-                <option value="£10,000+">£10,000+</option>
-              </select>
+              <div>
+                <select
+                  name="estimatedBudget"
+                  value={values.estimatedBudget}
+                  onChange={handleFieldChange}
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                >
+                  <option value="">ESTIMATED BUDGET</option>
+                  <option value="Under £1,000">Under £1,000</option>
+                  <option value="£1,000 - £5,000">£1,000 - £5,000</option>
+                  <option value="£5,000 - £10,000">£5,000 - £10,000</option>
+                  <option value="£10,000+">£10,000+</option>
+                </select>
+                {errors.estimatedBudget && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">
+                    {errors.estimatedBudget}
+                  </p>
+                )}
+              </div>
 
-              <textarea
-                name="message"
-                placeholder="YOUR MESSAGE"
-                rows={4}
-                required
-                className="md:col-span-2 border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
-              />
+              <div className="md:col-span-2">
+                <textarea
+                  name="message"
+                  value={values.message}
+                  onChange={handleFieldChange}
+                  placeholder="YOUR MESSAGE"
+                  rows={4}
+                  className="w-full border-b border-neutral-300 bg-transparent py-4 text-sm font-semibold outline-none transition focus:border-[#3333cc]"
+                />
+                {errors.message && (
+                  <p className="mt-2 text-xs font-semibold text-red-600">{errors.message}</p>
+                )}
+              </div>
               <div className="md:col-span-2 flex justify-center">
                 <button
                   type="submit"
