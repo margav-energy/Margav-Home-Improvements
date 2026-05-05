@@ -139,15 +139,15 @@ export default function WhyChoose() {
           </p>
 
           <h3 className="max-w-xl text-5xl font-extrabold leading-none tracking-tight md:text-7xl">
-            Not just home improvement.
+            More than home improvement.
             <span className="block bg-gradient-to-r from-[#66cc66] via-[#33cc66] to-[#00cc99] bg-clip-text text-transparent">
-              A better way to build.
+              A smarter way to build.
             </span>
           </h3>
 
           <p className="mt-8 max-w-md text-lg leading-8 text-white/65">
-            A polished, dependable approach to upgrading your property — from
-            the first quote to the final finish.
+            A structured, well-managed approach that keeps your project running
+            smoothly from the initial visit through to the final handover.
           </p>
         </div>
 
