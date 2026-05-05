@@ -111,11 +111,11 @@ export default function Services() {
                 </div>
 
                 <div className="mt-8">
-                  <h2 className="text-4xl font-extrabold uppercase leading-tight">
+                  <h2 className="text-4xl font-extrabold uppercase leading-tight text-[#3333cc]">
                     {activeService.title}
                   </h2>
 
-                  <p className="mt-4 max-w-xl text-lg leading-8 text-neutral-500">
+                  <p className="mt-4 max-w-xl text-lg leading-8 text-[#3333cc]">
                     {activeService.description}
                   </p>
                 </div>
